@@ -5084,7 +5084,7 @@ static CURLcode create_conn(struct SessionHandle *data,
    * If the protocol is using SSL and HTTP proxy is used, we set
    * the tunnel_proxy bit.
    *************************************************************/
-  if((conn->given->flags&PROTOPT_SSL) && conn->bits.httpproxy)
+  if((conn->given->flags&PROTOPT_SSL) && conn->bits.httpproxy && !(conn->handler->protocol & CURLPROTO_HTTP))
     conn->bits.tunnel_proxy = TRUE;
 
   /*************************************************************

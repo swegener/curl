@@ -1321,7 +1321,7 @@ CURLcode Curl_http_connect(struct connectdata *conn, bool *done)
     /* nothing else to do except wait right now - we're not done here. */
     return CURLE_OK;
 
-  if(conn->given->flags & PROTOPT_SSL) {
+  if(conn->given->flags & PROTOPT_SSL && (conn->bits.tunnel_proxy || !conn->bits.httpproxy)) {
     /* perform SSL initialization */
     if(data->state.used_interface == Curl_if_multi) {
       result = https_connecting(conn, done);
