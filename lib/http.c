@@ -2257,10 +2257,18 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
     return result;
 
   /* url */
-  if(paste_ftp_userpwd)
-    result = Curl_add_bufferf(req_buffer, "ftp://%s:%s@%s",
-                              conn->user, conn->passwd,
-                              ppath + sizeof("ftp://") - 1);
+  if(paste_ftp_userpwd) {
+    char *user = curl_easy_escape(conn, conn->user, 0);
+    char *passwd = curl_easy_escape(conn, conn->passwd, 0);
+    if(user && passwd)
+      result = Curl_add_bufferf(req_buffer, "ftp://%s:%s@%s",
+                                user, passwd,
+                                ppath + sizeof("ftp://") - 1);
+    else
+      result = CURLE_OUT_OF_MEMORY;
+    free(user);
+    free(passwd);
+  }
   else
     result = Curl_add_buffer(req_buffer, ppath, strlen(ppath));
   if(result)
